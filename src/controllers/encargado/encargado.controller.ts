@@ -26,4 +26,10 @@ export class EncargadoController {
 
   }
 
+  @Post('login')
+  login(@Body() body) {
+    console.log(body);
+    return this.encargadoService.loginEncargado(body.cc, body.contrasena);
+  }
+
 }

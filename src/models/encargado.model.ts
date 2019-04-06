@@ -9,4 +9,5 @@ export const EncargadoSchema = new Schema({
   telefono: { type: String, required: true },
   direccion: { type: String, required: true },
   pacientes: { type: [{ paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' } }], required: false },
+  contrasena: {type: String, required: true}
 });

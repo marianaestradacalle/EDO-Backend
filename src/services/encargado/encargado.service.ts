@@ -1,10 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { CustomException } from '../../utils/custom-exception';
 import { IEncargado } from '../../interfaces/iencargado.interface';
 import { PacienteService } from '../paciente/paciente.service';
+import { EncryptPipe } from '../../pipes/encrypt.pipe';
+import { error } from 'util';
 
 @Injectable()
 export class EncargadoService {
@@ -13,6 +16,7 @@ export class EncargadoService {
   }
 
   async registrarEncargado(encargado) {
+    encargado.contrasena = new EncryptPipe().transform(encargado.contrasena);
     let result;
     let exception: HttpException;
     const newEncargado = new this.encargadoModel(encargado);
@@ -77,6 +81,26 @@ export class EncargadoService {
         exception = CustomException.internalError(err);
       }
       result = res;
+    });
+    return result == null ? Promise.reject(exception) : Promise.resolve(result);
+  }
+
+  async loginEncargado(ccEncargado, contrasena) {
+    let result;
+    let exception: HttpException;
+    await this.encargadoModel.findOne({ cc: ccEncargado }, (err, res) => {
+      if (err) {
+        exception = CustomException.internalError(err);
+      } else if (!res) {
+        exception = CustomException.noResults(`No se ha encontrado un encargado con la cédula ${ccEncargado}`);
+      }
+      bcrypt.compare(contrasena, res.contrasena, (err1, res1) => {
+        if (!res1) {
+          exception = CustomException.noResults(`Contraseña incorrecta`);
+        } else {
+          result  = res;
+        }
+      });
     });
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
