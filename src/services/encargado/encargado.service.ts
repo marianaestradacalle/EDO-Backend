@@ -8,12 +8,16 @@ import { IEncargado } from '../../interfaces/iencargado.interface';
 import { PacienteService } from '../paciente/paciente.service';
 import { EncryptPipe } from '../../pipes/encrypt.pipe';
 import { error } from 'util';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class EncargadoService {
   // @ts-ignore
-  constructor(@InjectModel('Encargado') private  encargadoModel: Model, private pacienteService: PacienteService) {
-  }
+  constructor(
+    // @ts-ignore
+    @InjectModel('Encargado') private encargadoModel: Model,
+    private pacienteService: PacienteService,
+  ) {}
 
   async registrarEncargado(encargado) {
     encargado.contrasena = new EncryptPipe().transform(encargado.contrasena);
@@ -32,7 +36,9 @@ export class EncargadoService {
     const paciente = await this.pacienteService.getPaciente(ccPaciente);
     this.encargadoModel.findOne({ cc: ccEncargado }, async (err, res) => {
       if (!res) {
-        exception = CustomException.noResults(`No se ha encontrado un encargado con la cédula ${ccEncargado}`);
+        exception = CustomException.noResults(
+          `No se ha encontrado un encargado con la cédula ${ccEncargado}`,
+        );
       } else if (err) {
         exception = CustomException.internalError(err);
       }
@@ -48,7 +54,9 @@ export class EncargadoService {
     let exception: HttpException;
     await this.encargadoModel.findOne({ cc }, (err, res) => {
       if (!res) {
-        exception = CustomException.noResults(`No se ha encontrado un encargado con la cédula ${cc}`);
+        exception = CustomException.noResults(
+          `No se ha encontrado un encargado con la cédula ${cc}`,
+        );
       } else if (err) {
         exception = CustomException.internalError(err);
       }
@@ -62,7 +70,9 @@ export class EncargadoService {
     let exception: HttpException;
     await this.encargadoModel.findOneAndDelete({ cc }, (err, res) => {
       if (!res) {
-        exception = CustomException.noResults(`No se ha encontrado un encargado con la cédula ${cc}`);
+        exception = CustomException.noResults(
+          `No se ha encontrado un encargado con la cédula ${cc}`,
+        );
       } else if (err) {
         exception = CustomException.internalError(err);
       }
@@ -74,33 +84,41 @@ export class EncargadoService {
   async updateEncargado(encargado: IEncargado) {
     let result;
     let exception: HttpException;
-    await this.encargadoModel.findOneAndUpdate({ cc: encargado.cc }, (err, res) => {
-      if (!res) {
-        exception = CustomException.noResults(`No se ha encontrado un encargado con la cédula ${encargado.cc}`);
-      } else if (err) {
-        exception = CustomException.internalError(err);
-      }
-      result = res;
-    });
+    await this.encargadoModel.findOneAndUpdate(
+      { cc: encargado.cc },
+      (err, res) => {
+        if (!res) {
+          exception = CustomException.noResults(
+            `No se ha encontrado un encargado con la cédula ${encargado.cc}`,
+          );
+        } else if (err) {
+          exception = CustomException.internalError(err);
+        }
+        result = res;
+      },
+    );
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 
   async loginEncargado(ccEncargado, contrasena) {
     let result;
     let exception: HttpException;
-    await this.encargadoModel.findOne({ cc: ccEncargado }, (err, res) => {
+    await this.encargadoModel.findOne({ cc: ccEncargado }, async (err, res) => {
+      // tslint:disable-next-line:no-console
+      console.log(res);
       if (err) {
         exception = CustomException.internalError(err);
       } else if (!res) {
-        exception = CustomException.noResults(`No se ha encontrado un encargado con la cédula ${ccEncargado}`);
-      }
-      bcrypt.compare(contrasena, res.contrasena, (err1, res1) => {
-        if (!res1) {
-          exception = CustomException.noResults(`Contraseña incorrecta`);
-        } else {
-          result  = res;
-        }
-      });
+        exception = CustomException.noResults(
+          `No se ha encontrado un encargado con la cédula ${ccEncargado}`,
+        );
+      } else  if (!bcrypt.compareSync(contrasena, res.contrasena)) {
+        exception = CustomException.noResults(
+          `incoreecta`,
+        );
+      } else {
+        result = res
+;      }
     });
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
