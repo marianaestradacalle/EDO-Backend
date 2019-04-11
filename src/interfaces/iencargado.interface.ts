@@ -4,5 +4,4 @@ export interface IEncargado {
     cc?: string;
     relacion?: string;
     telefono?: string;
-    direccion?: string;
 }
