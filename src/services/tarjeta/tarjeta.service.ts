@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CustomException } from '../../utils/custom-exception';
 import { ITarjeta } from '../../interfaces/itajeta.interface';
 
+
+
 @Injectable()
 export class TarjetaService {
 
@@ -31,7 +33,8 @@ export class TarjetaService {
         exception = CustomException.internalError(err);
       }
       result = res;
-    });
+    })
+       .populate('paciente');
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 

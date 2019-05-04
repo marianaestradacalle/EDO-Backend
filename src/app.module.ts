@@ -12,6 +12,7 @@ import { TarjetaController } from './controllers/tarjeta/tarjeta.controller';
 import { AlertaController } from './controllers/alerta/alerta.controller';
 import { TarjetaService } from './services/tarjeta/tarjeta.service';
 import { EncargadoService } from './services/encargado/encargado.service';
+import { SensorGateway } from './gateways/sensor.gateway';
 
 const URLDB = process.env.urlDB || 'mongodb://localhost:27017/edo';
 
@@ -26,7 +27,7 @@ const URLDB = process.env.urlDB || 'mongodb://localhost:27017/edo';
     ]),
   ],
   controllers: [AppController, EncargadoController, PacienteController, EncargadoController, TarjetaController, AlertaController],
-  providers: [AppService, PacienteService, TarjetaService, EncargadoService ],
+  providers: [AppService, PacienteService, TarjetaService, EncargadoService, SensorGateway ],
 })
 export class AppModule {
 }
