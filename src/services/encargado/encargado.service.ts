@@ -49,6 +49,20 @@ export class EncargadoService {
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 
+  async getAllEncargados() {
+    let result;
+    let exception: HttpException;
+    await this.encargadoModel.find( (err, res) => {
+      if (!res) {
+        exception = CustomException.noResults('No hay encargados');
+      } else if (err) {
+        exception = CustomException.internalError(err);
+      }
+      result = res;
+    });
+    return result == null ? Promise.reject(exception) : Promise.resolve(result);
+  }
+
   async getEncargado(cc) {
     let result;
     let exception: HttpException;

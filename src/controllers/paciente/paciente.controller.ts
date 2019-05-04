@@ -17,6 +17,11 @@ export class PacienteController {
     return this.pacienteService.getPaciente(cc);
   }
 
+  @Get()
+  mostrarPAcientes() {
+    return this.pacienteService.getAllPacientes();
+  }
+
   @Put()
   actualizarPaciente(@Body() body) {
     return this.pacienteService.updatePaciente(body);

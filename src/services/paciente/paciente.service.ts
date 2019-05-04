@@ -23,6 +23,21 @@ export class PacienteService {
     return result;
   }
 
+  async getAllPacientes() {
+    let result;
+    let exception: HttpException;
+
+    await this.pacienteModel.find( (err, res) => {
+      if (!res) {
+        exception = CustomException.noResults('No hay pacientes registrados');
+      } else if (err) {
+        exception = CustomException.internalError(err);
+      }
+      result = res;
+    });
+    return result == null ? Promise.reject(exception) : Promise.resolve(result);
+  }
+
   async getPaciente(cc) {
     let result;
     let exception: HttpException;

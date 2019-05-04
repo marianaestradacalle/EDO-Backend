@@ -16,9 +16,14 @@ export class TarjetaController {
     return this.tarjetaService.getTarjeta(codigo);
   }
 
+  @Get()
+  mostrarTarjetas() {
+    return this.tarjetaService.getAllTarjeta();
+  }
+
   @Put()
   actualizarTarjeta(@Body() body) {
-
+    return this.tarjetaService.updateTarjeta(body);
   }
 
   @Delete(':codigo')
