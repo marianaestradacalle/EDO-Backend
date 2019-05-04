@@ -19,10 +19,15 @@ export class EncargadoController {
     return await this.encargadoService.getEncargado(cc);
   }
 
+  @Get()
+  async mostrarEncargados() {
+    return await this.encargadoService.getAllEncargados();
+  }
+
   @Put()
   // tslint:disable-next-line:no-empty
   async actualizarEncargado(@Body() body) {
-  return await  this.encargadoService.updateEncargado(body);
+  return await this.encargadoService.updateEncargado(body);
   }
 
   @Delete(':cc')
