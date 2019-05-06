@@ -13,10 +13,15 @@ export class EncargadoController {
     return await this.encargadoService.registrarEncargado(body);
   }
 
-  @Get(':cc')
-  // tslint:disable-next-line:no-empty
-  async mostrarEncargado(@Param('cc') cc) {
-    return await this.encargadoService.getEncargado(cc);
+  // @Get(':cc')
+  // // tslint:disable-next-line:no-empty
+  // async mostrarEncargado(@Param('cc') cc) {
+  //   return await this.encargadoService.getEncargado(cc);
+  // }
+
+  @Get(':id')
+  async getPacientes(@Param('id') id) {
+    return this.encargadoService.getPacientes(id);
   }
 
   @Get()
@@ -27,14 +32,14 @@ export class EncargadoController {
   @Put()
   // tslint:disable-next-line:no-empty
   async actualizarEncargado(@Body() body) {
-  return await this.encargadoService.updateEncargado(body);
+    return await this.encargadoService.updateEncargado(body);
   }
 
   @Delete(':cc')
   // tslint:disable-next-line:no-empty
   // Se pone @Params porque el dato como parametro se esta obteniendo de la ruta
   async eliminarEncargado(@Param('cc') cc) {
-  return await this.encargadoService.deleteEncargado(cc);
+    return await this.encargadoService.deleteEncargado(cc);
   }
 
   @Post('login')

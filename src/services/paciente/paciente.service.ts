@@ -5,21 +5,27 @@ import { Model } from 'mongoose';
 import { IPaciente } from '../../interfaces/ipaciente.interface';
 import { CustomException } from '../../utils/custom-exception';
 import { TarjetaService } from '../tarjeta/tarjeta.service';
+import { EncargadoService } from '../encargado/encargado.service';
 
 @Injectable()
 export class PacienteService {
   // @ts-ignore
-  constructor(@InjectModel('Paciente') private  pacienteModel: Model, private  tarjetaService: TarjetaService) {
+  constructor(@InjectModel('Paciente') private  pacienteModel: Model,
+              private  tarjetaService: TarjetaService,
+              private encargadoService: EncargadoService) {
   }
 
-  async addPaciente(paciente: IPaciente) {
+  async addPaciente(paciente: IPaciente, ccEncargado) {
     paciente.tarjeta = await this.tarjetaService.getTarjeta(paciente.tarjeta).then(value => value._id);
     let result;
     const newPaciente = new this.pacienteModel(paciente);
     result = await newPaciente.save().catch(reason => {
       throw CustomException.internalError(reason);
     });
-    this.tarjetaService.addPaciente(paciente.tarjeta, result._id);
+    await this.tarjetaService.addPaciente(paciente.tarjeta, result._id);
+    await this.encargadoService.agregarPaciente(ccEncargado, paciente.cc).then(value => {
+      console.log(value);
+    }).catch(reason => console.log(reason));
     return result;
   }
 
@@ -27,14 +33,15 @@ export class PacienteService {
     let result;
     let exception: HttpException;
 
-    await this.pacienteModel.find( (err, res) => {
+    await this.pacienteModel.find((err, res) => {
       if (!res) {
         exception = CustomException.noResults('No hay pacientes registrados');
       } else if (err) {
         exception = CustomException.internalError(err);
       }
       result = res;
-    });
+    })
+      .populate('tarjeta');
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 
@@ -48,7 +55,9 @@ export class PacienteService {
         exception = CustomException.internalError(err);
       }
       result = res;
-    });
+    })
+      .populate('tarjeta');
+    ;
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 

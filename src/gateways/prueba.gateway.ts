@@ -17,10 +17,6 @@ export class PruebaGateway {
     this.server.emit('measurement', mea);
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
-  }
 
   @SubscribeMessage('events')
   findAll(client: Client, data: any): Observable<WsResponse<number>> {

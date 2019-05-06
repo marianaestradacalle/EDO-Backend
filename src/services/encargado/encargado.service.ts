@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
@@ -16,8 +16,10 @@ export class EncargadoService {
   constructor(
     // @ts-ignore
     @InjectModel('Encargado') private encargadoModel: Model,
+    @Inject(forwardRef(() => PacienteService))
     private pacienteService: PacienteService,
-  ) {}
+  ) {
+  }
 
   async registrarEncargado(encargado) {
     encargado.contrasena = new EncryptPipe().transform(encargado.contrasena);
@@ -35,6 +37,7 @@ export class EncargadoService {
     let exception: HttpException;
     const paciente = await this.pacienteService.getPaciente(ccPaciente);
     this.encargadoModel.findOne({ cc: ccEncargado }, async (err, res) => {
+      console.log('res ap:', res, err);
       if (!res) {
         exception = CustomException.noResults(
           `No se ha encontrado un encargado con la cédula ${ccEncargado}`,
@@ -42,7 +45,7 @@ export class EncargadoService {
       } else if (err) {
         exception = CustomException.internalError(err);
       }
-      res.Pacientes.push({ paciente: paciente._id });
+      res.pacientes.push({ paciente: paciente._id });
       await res.save();
       result = res;
     });
@@ -52,7 +55,7 @@ export class EncargadoService {
   async getAllEncargados() {
     let result;
     let exception: HttpException;
-    await this.encargadoModel.find( (err, res) => {
+    await this.encargadoModel.find((err, res) => {
       if (!res) {
         exception = CustomException.noResults('No hay encargados');
       } else if (err) {
@@ -126,14 +129,21 @@ export class EncargadoService {
         exception = CustomException.noResults(
           `No se ha encontrado un encargado con la cédula ${ccEncargado}`,
         );
-      } else  if (!bcrypt.compareSync(contrasena, res.contrasena)) {
+      } else if (!bcrypt.compareSync(contrasena, res.contrasena)) {
         exception = CustomException.noResults(
           `incoreecta`,
         );
       } else {
         result = res
-;      }
+        ;
+      }
     });
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
+  }
+
+  async getPacientes(id) {
+    const pac = await this.encargadoModel.findById(id, 'pacientes')
+      .populate('pacientes.paciente');
+    return pac.pacientes;
   }
 }

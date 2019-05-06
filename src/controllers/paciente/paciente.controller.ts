@@ -9,7 +9,8 @@ export class PacienteController {
 
   @Post()
   agregarPaciente(@Body() body) {
-    return this.pacienteService.addPaciente(body);
+    console.log(body);
+    return this.pacienteService.addPaciente(body, body.encargado);
   }
 
   @Get(':cc')
