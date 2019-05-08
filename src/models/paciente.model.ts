@@ -8,4 +8,5 @@ export const PacienteSchema = new mongoose.Schema({
   genero: { type: String, required: true },
   fechaNacimiento: { type: Date, required: true, default: new Date() },
   tarjeta: { type: Schema.Types.ObjectId, ref: 'Tarjeta', required: false },
+  familiares: { type: [{ nombre: String, telefono: String }] },
 });
