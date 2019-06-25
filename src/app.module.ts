@@ -14,9 +14,11 @@ import { TarjetaService } from './services/tarjeta/tarjeta.service';
 import { EncargadoService } from './services/encargado/encargado.service';
 import { SensorGateway } from './gateways/sensor.gateway';
 import { AlertService } from './services/alert/alert.service';
+import { EventoSchema } from './models/evento.model';
+import { EventoController } from './controllers/evento/evento.controller';
 
 const URLDB = process.env.urlDB || 'mongodb://localhost:27017/edo';
-
+ 
 @Module({
   imports: [
     HttpModule,
@@ -26,10 +28,11 @@ const URLDB = process.env.urlDB || 'mongodb://localhost:27017/edo';
       { name: 'Paciente', schema: PacienteSchema },
       { name: 'Encargado', schema: EncargadoSchema },
       { name: 'Tarjeta', schema: TarjetaSchema },
+      { name: 'Evento', schema: EventoSchema },
     ]),
   ],
-  controllers: [AppController, EncargadoController, PacienteController, EncargadoController, TarjetaController, AlertaController],
-  providers: [AppService, PacienteService, TarjetaService, EncargadoService, SensorGateway, AlertService ],
+  controllers: [AppController, EventoController, EncargadoController, PacienteController, EncargadoController, TarjetaController, AlertaController],
+  providers: [AppService, PacienteService, TarjetaService, EncargadoService, SensorGateway, AlertService],
 })
 export class AppModule {
 }

@@ -28,8 +28,6 @@ export class AlertService {
     const accountSid = 'AC2012235f80a38e88f98a54e3c85d940a';
     const authToken = '1d8b99f7985bb0b759da72e5c472e060';
     const client = require('twilio')(accountSid, authToken);
-
-    console.log('numeros', numeros);
     for (const num of numeros) {
       client.messages
         .create({

@@ -8,7 +8,7 @@ import { ITarjeta } from '../../interfaces/itajeta.interface';
 export class TarjetaService {
 
   // @ts-ignore
-  constructor(@InjectModel('Tarjeta') private  tarjetaModel: Model) {
+  constructor(@InjectModel('Tarjeta') private tarjetaModel: Model) {
   }
 
   async getAllTarjeta() {
