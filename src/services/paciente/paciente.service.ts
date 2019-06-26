@@ -16,7 +16,7 @@ export class PacienteService {
   }
 
   async addPaciente(paciente: IPaciente, ccEncargado) {
-    paciente.tarjeta = await this.tarjetaService.getTarjeta(paciente.tarjeta).then(value => value._id);
+    paciente.tarjeta = await this.tarjetaService.getTarjetaCodigo(paciente.tarjeta).then(value => value._id);
     let result;
     const newPaciente = new this.pacienteModel(paciente);
     result = await newPaciente.save().catch(reason => {
@@ -80,7 +80,7 @@ export class PacienteService {
     let result;
     let exception: HttpException;
     if (paciente.tarjeta) {
-      paciente.tarjeta = await this.tarjetaService.getTarjeta(paciente.tarjeta).then(value => value._id);
+      paciente.tarjeta = await this.tarjetaService.getTarjetaCodigo(paciente.tarjeta).then(value => value._id);
     }
     await this.pacienteModel.findOneAndUpdate({ cc: paciente.cc }, paciente, (err, res) => {
       if (!res) {
@@ -91,5 +91,12 @@ export class PacienteService {
       result = res;
     });
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
+  }
+
+  async addFamiliar(id, familiar: { nombre, telefono }) {
+    this.pacienteModel.findById(id, (err, paciente) => {
+      paciente.familiares.push(familiar);
+      paciente.save();
+    });
   }
 }
