@@ -22,4 +22,12 @@ export class EventoService {
     get(paciente) {
 
     }
+
+    async  getOne(id) {
+        return await this.eventoModel.findById(id);
+    }
+
+    async getAll(paciente) {
+        return await this.eventoModel.find({ paciente });
+    }
 }

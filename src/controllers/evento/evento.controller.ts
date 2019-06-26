@@ -7,27 +7,17 @@ export class EventoController {
 
     }
     @Post()
-    async agregarTarjeta(@Body() body) {
-      return await this.eventoService.addTarjeta(body);
+    async agregarEvento(@Body() body) {
+      return await this.eventoService.registrar(body);
     }
   
-    @Get(':codigo')
-    mostrarTarjeta(@Param('codigo') codigo) {
-      return this.eventoService.getTarjetaCodigo(codigo);
+    @Get(':id')
+    getOne(@Param('id') id) {
+      return this.eventoService.getOne(id);
     }
   
-    @Get()
-    mostrarTarjetas() {
-      return this.eventoService.getAllTarjeta();
-    }
-  
-    @Put()
-    actualizarTarjeta(@Body() body) {
-      return this.eventoService.updateTarjeta(body);
-    }
-  
-    @Delete(':codigo')
-    eliminarTarjeta(@Param('codigo') codigo) {
-      return this.eventoService.deleteTarjeta(codigo);
-    }
+    @Get('/paciente/:paciente')
+    mostrarTarjetas(@Param('paciente') paciente) {
+      return this.eventoService.getAll(paciente);
+    }  
 }
