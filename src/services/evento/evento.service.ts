@@ -13,6 +13,7 @@ export class EventoService {
     async  registrar(evento) {
         let result;
         let exception;
+        evento.dia = evento.inicio;
         result = await new this.eventoModel(evento).save().catch(reason => {
             exception = CustomException.internalError(reason)
         });

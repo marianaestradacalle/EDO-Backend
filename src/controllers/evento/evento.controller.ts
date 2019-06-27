@@ -8,6 +8,7 @@ export class EventoController {
     }
     @Post()
     async agregarEvento(@Body() body) {
+      console.log('new evento', body);
       return await this.eventoService.registrar(body);
     }
   

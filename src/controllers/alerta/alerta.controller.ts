@@ -10,6 +10,7 @@ export class AlertaController {
 
   @Post()
   async agregarAlerta(@Body() body) {
+    console.log('body', body);
     const tarjeta = body.tarjeta;
     let resp = null;
     await this.alertaService.generarAlerta(tarjeta)
