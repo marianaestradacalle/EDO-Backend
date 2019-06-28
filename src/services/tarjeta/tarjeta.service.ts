@@ -4,19 +4,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CustomException } from '../../utils/custom-exception';
 import { ITarjeta } from '../../interfaces/itajeta.interface';
 
-
-
 @Injectable()
 export class TarjetaService {
 
   // @ts-ignore
-  constructor(@InjectModel('Tarjeta') private  tarjetaModel: Model) {
+  constructor(@InjectModel('Tarjeta') private tarjetaModel: Model) {
   }
 
   async getAllTarjeta() {
     let result;
     let exception: HttpException;
-    await this.tarjetaModel.find( (err, res) => {
+    await this.tarjetaModel.find((err, res) => {
       if (!res) {
         exception = CustomException.noResults('No hay tarjetas registradas');
       } else if (err) {
@@ -37,10 +35,27 @@ export class TarjetaService {
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 
-  async getTarjeta(codigo) {
+  async getTarjetaRFID(codigoRFID) {
+    let result;
+    let exception: HttpException;
+    await this.tarjetaModel.findOne({ codigoRFID }, (err, res) => {
+      console.log(' Tarjeta obtenida:', res);
+      if (!res) {
+        exception = CustomException.noResults(`No se ha encontrado un tarjeta con el código ${codigoRFID}`);
+      } else if (err) {
+        exception = CustomException.internalError(err);
+      }
+      result = res;
+    })
+      .populate('paciente');
+    return result == null ? Promise.reject(exception) : Promise.resolve(result);
+  }
+
+  async getTarjetaCodigo(codigo) {
     let result;
     let exception: HttpException;
     await this.tarjetaModel.findOne({ codigo }, (err, res) => {
+      console.log(' Tarjeta obtenida:', res);
       if (!res) {
         exception = CustomException.noResults(`No se ha encontrado un tarjeta con el código ${codigo}`);
       } else if (err) {
@@ -48,7 +63,7 @@ export class TarjetaService {
       }
       result = res;
     })
-       .populate('paciente');
+      .populate('paciente');
     return result == null ? Promise.reject(exception) : Promise.resolve(result);
   }
 

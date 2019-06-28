@@ -14,14 +14,18 @@ export class SensorGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('tarjeta') // Escuchamos el evento tarjeta que es emitido por el arduino cuando detecta una tarjeta
   async handleMessage(client: any, codigoT: any) { // sacamos la informacion del cliente y el codigo
     console.log('tarjeta: ', codigoT);
-    const tarjeta = await this.tarjetaService.getTarjeta(codigoT).then(value => { // obtenemos la informacion de la tarjeta
+    const tarjeta = await this.tarjetaService.getTarjetaRFID(codigoT).then(value => { // obtenemos la informacion de la tarjeta
       this.salidaP(value);
     });
 
   }
 
-  salidaP(tarjeta) { // emitimos el paciente que salio
-    this.server.emit('salio', tarjeta);
+  // salidaP(tarjeta) { // emitimos el paciente que salio
+  //   this.server.emit('salio', tarjeta);
+  // }
+
+  async salidaP(value) { // emitimos el paciente que salio
+    this.server.emit('salio', value);
   }
 
   handleConnection(client: Client, ...args: any[]): any { // cuando alguien se conecta

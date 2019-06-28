@@ -28,6 +28,13 @@ export class PacienteController {
     return this.pacienteService.updatePaciente(body);
   }
 
+  @Put('/familiar')
+  addFamiliar(@Body() body) {
+    const id = body.id;
+    const familiar = body.familiar;
+    return this.pacienteService.addFamiliar(id, familiar);
+  }
+
   @Delete(':cc')
   eliminarPaciente(@Param('cc') cc) {
     return this.pacienteService.deletePaciente(cc);

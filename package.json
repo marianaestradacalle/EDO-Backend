@@ -40,7 +40,11 @@
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
+<<<<<<< HEAD
     "socket.io": "^2.2.0"
+=======
+    "twilio": "^3.30.3"
+>>>>>>> 7fc8d57aa1511d5a5018679d52697bc2a4da9393
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",

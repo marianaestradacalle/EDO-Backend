@@ -13,7 +13,7 @@ export class TarjetaController {
 
   @Get(':codigo')
   mostrarTarjeta(@Param('codigo') codigo) {
-    return this.tarjetaService.getTarjeta(codigo);
+    return this.tarjetaService.getTarjetaCodigo(codigo);
   }
 
   @Get()
